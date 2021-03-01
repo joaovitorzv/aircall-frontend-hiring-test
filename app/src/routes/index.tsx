@@ -4,8 +4,8 @@ import { Switch } from 'react-router-dom'
 import PrivateRoute from './privateRoute'
 import PublicRoute from './publicRoute'
 
-import Login from '../Pages/Login'
-import Calls from '../Pages/Calls'
+import Login from '../pages/Login'
+import Calls from '../pages/Calls'
 
 const Routes: React.FC = () => {
   return (
