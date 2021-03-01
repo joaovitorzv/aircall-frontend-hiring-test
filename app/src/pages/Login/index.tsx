@@ -1,10 +1,28 @@
 import React from 'react';
 
-// import { Container } from './styles';
+import {
+  Container,
+  FormContainer,
+  Form
+} from './styles';
+
+import { Input, PrimaryButton } from '../../styles'
 
 const Login: React.FC = () => {
   return (
-    <h1>Login</h1>
+    <Container color='green'>
+      <div className='brand'>
+        <h1>Aircall</h1>
+      </div>
+      <FormContainer>
+        <h2>Login</h2>
+        <Form>
+          <Input placeholder='Email' type='email' />
+          <Input placeholder='Password' type='password' />
+          <PrimaryButton>Login</PrimaryButton>
+        </Form>
+      </FormContainer>
+    </Container>
   );
 }
 
