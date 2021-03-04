@@ -15,7 +15,7 @@ const PublicRoute: React.FC<RouteProps> = ({
   isRestricted = false,
   ...rest
 }) => {
-  const user = null
+  const user = 'joao'
 
   return (
     <ReactDOMRoute
@@ -23,7 +23,7 @@ const PublicRoute: React.FC<RouteProps> = ({
       render={({ location }) => {
         return isRestricted && !!user ? (
           <Redirect to={{
-            pathname: '/',
+            pathname: '/calls',
             state: { from: location }
           }} />
         ) : (

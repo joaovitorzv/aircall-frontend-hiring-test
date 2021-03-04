@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 import styled, { createGlobalStyle } from 'styled-components'
 import Colors from './theme'
 
@@ -35,4 +36,11 @@ export const PrimaryButton = styled.button`
   text-align: center;
   border-radius: 8px;
   border: none;
+`
+
+export const Anchor = styled(Link)`
+  color: ${Colors.secondary};
+  text-decoration: none;
+  font-size: 16px;
+  font-weight: bold;
 `

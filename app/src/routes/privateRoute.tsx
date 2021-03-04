@@ -14,7 +14,7 @@ const PrivateRoute: React.FC<RouteProps> = ({
   component: Component,
   ...rest
 }) => {
-  const user = null
+  const user = 'joao'
 
   return (
     <ReactDOMRoute
