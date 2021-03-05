@@ -15,10 +15,11 @@ export const HeaderInfo = styled.div`
 export const HeaderTitle = styled.div`
   h2 {
     font-size: 2.5rem;
+    text-transform: capitalize;
   }
 `
 export const HeaderActions = styled.div`
-  svg:not(:nth-child(1)) {
+  button {
     margin-left: 20px;
   }
 `

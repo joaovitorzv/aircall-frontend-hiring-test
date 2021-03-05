@@ -44,3 +44,7 @@ export const Anchor = styled(Link)`
   font-size: 16px;
   font-weight: bold;
 `
+export const IconButton = styled.button`
+  border: none;
+  background-color: transparent;
+`
