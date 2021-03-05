@@ -5,6 +5,8 @@ import {
   Redirect
 } from 'react-router-dom'
 
+import { useAuth } from '../hooks/auth'
+
 interface RouteProps extends ReactDOMRouteProps {
   isRestricted: boolean,
   component: React.ComponentType
@@ -15,7 +17,7 @@ const PublicRoute: React.FC<RouteProps> = ({
   isRestricted = false,
   ...rest
 }) => {
-  const user = 'joao'
+  const { user } = useAuth()
 
   return (
     <ReactDOMRoute
