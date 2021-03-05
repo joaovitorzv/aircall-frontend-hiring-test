@@ -3,6 +3,8 @@ import HeaderTabs from '../HeaderTabs'
 
 import { FaSearch, FaUser } from 'react-icons/fa'
 
+import { useAuth } from '../../hooks/auth'
+
 import {
   Container,
   HeaderInfo,
@@ -12,11 +14,13 @@ import {
 import Colors from '../../styles/theme'
 
 const Header: React.FC = () => {
+  const { user } = useAuth()
+
   return (
     <Container>
       <HeaderInfo>
         <HeaderTitle>
-          <h2>Calls</h2>
+          <h2>{user.username}</h2>
         </HeaderTitle>
 
         <HeaderActions>
