@@ -1,7 +1,7 @@
 import React from 'react'
 import HeaderTabs from '../HeaderTabs'
 
-import { FaSearch, FaPlus } from 'react-icons/fa'
+import { FaSearch, FaUser } from 'react-icons/fa'
 
 import {
   Container,
@@ -21,7 +21,7 @@ const Header: React.FC = () => {
 
         <HeaderActions>
           <FaSearch size={22} color={Colors.green} />
-          <FaPlus size={22} color={Colors.green} />
+          <FaUser size={22} color={Colors.green} />
         </HeaderActions>
       </HeaderInfo>
 
