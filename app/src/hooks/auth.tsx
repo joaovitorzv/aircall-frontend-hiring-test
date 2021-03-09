@@ -93,7 +93,7 @@ export const AuthProvider: React.FC = ({ children }) => {
       password
     })
     const { access_token, user } = response.data
-    const token_expiration = Date.now() + 1000 * 60 * 9
+    const token_expiration = Date.now() + 1000 * 60 * 10
 
     setCookie('access_token', access_token, {
       maxAge: 60 * 10
@@ -121,7 +121,7 @@ export const AuthProvider: React.FC = ({ children }) => {
     if (!state.access_token) return
 
     const fresh_token = (await api.post('/auth/refresh-token')).data.access_token
-    const token_expiration = JSON.stringify(Date.now() + 1000 * 60 * 9)
+    const token_expiration = JSON.stringify(Date.now() + 1000 * 60 * 10)
 
     api.defaults.headers.authorization = `Bearer ${fresh_token}`
     setCookie('access_token', fresh_token, {
