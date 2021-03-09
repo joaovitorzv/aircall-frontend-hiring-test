@@ -2,23 +2,10 @@ import React, {
   createContext,
   useContext,
   useCallback,
-  useReducer,
-  useEffect
+  useReducer
 } from 'react';
 import { useCookies } from 'react-cookie'
-import axios, { AxiosResponse } from 'axios'
 import api from '../services/api'
-
-axios.interceptors.response.use(function (response: AxiosResponse) {
-  // Do something before request is sent
-  console.log('LOIROS')
-  return response;
-}, function (error) {
-  console.error(error)
-  console.log('loiros err')
-  // Do something with request error
-  return Promise.reject(error);
-});
 
 interface User {
   id: string;
@@ -27,6 +14,7 @@ interface User {
 
 interface AuthState {
   access_token: string;
+  token_expiration: string;
   user: User;
 }
 
@@ -44,7 +32,8 @@ interface AuthContextData {
 
 enum AuthActionKind {
   SignIn = 'SIGN_IN',
-  Logout = 'LOGOUT'
+  Logout = 'LOGOUT',
+  RefreshToken = 'REFRESH_TOKEN'
 }
 
 type Action = {
@@ -59,11 +48,16 @@ export const AuthProvider: React.FC = ({ children }) => {
 
   const initAuthState = (): AuthState => {
     const access_token = cookies.access_token
+    const token_expiration = localStorage.getItem('@aircall:txp')
     const user = localStorage.getItem('@aircall:user')
 
-    if (access_token && user) {
+    if (access_token && user && token_expiration) {
       api.defaults.headers.authorization = `Bearer ${access_token}`
-      return { access_token, user: JSON.parse(user) }
+      return {
+        access_token,
+        token_expiration: JSON.parse(token_expiration),
+        user: JSON.parse(user)
+      }
     }
 
     return {} as AuthState
@@ -76,11 +70,18 @@ export const AuthProvider: React.FC = ({ children }) => {
       case AuthActionKind.SignIn:
         return {
           access_token: payload.access_token,
+          token_expiration: payload.token_expiration,
           user: payload.user
         }
 
       case AuthActionKind.Logout:
         return {} as AuthState
+
+      case AuthActionKind.RefreshToken:
+        return {
+          ...payload,
+          access_token: payload.access_token
+        }
     }
   }
 
@@ -92,33 +93,52 @@ export const AuthProvider: React.FC = ({ children }) => {
       password
     })
     const { access_token, user } = response.data
+    const token_expiration = Date.now() + 1000 * 60 * 9
 
     setCookie('access_token', access_token, {
       maxAge: 60 * 10
     })
+
     localStorage.setItem('@aircall:user', JSON.stringify(user))
+    localStorage.setItem('@aircall:txp', JSON.stringify(token_expiration))
 
     api.defaults.headers.authorization = `Bearer ${access_token}`
 
-    dispatch({ type: AuthActionKind.SignIn, payload: { access_token, user } })
+    dispatch({
+      type: AuthActionKind.SignIn,
+      payload: { access_token, token_expiration: JSON.stringify(token_expiration), user }
+    })
   }, [setCookie])
 
   const logout = useCallback(() => {
     removeCookie('access_token')
-    localStorage.removeItem('@aircall:user')
+    localStorage.clear()
 
     dispatch({ type: AuthActionKind.Logout, payload: {} as AuthState })
   }, [removeCookie])
 
   const refreshToken = useCallback(async () => {
-    const fresh_token = (await api.post('/auth/refresh-token')).data.access_token
+    if (!state.access_token) return
 
+    const fresh_token = (await api.post('/auth/refresh-token')).data.access_token
+    const token_expiration = JSON.stringify(Date.now() + 1000 * 60 * 9)
+
+    api.defaults.headers.authorization = `Bearer ${fresh_token}`
     setCookie('access_token', fresh_token, {
       maxAge: 60 * 10
     })
+    localStorage.setItem('@aircall:txp', token_expiration)
 
-    api.defaults.headers.authorization = `Bearer ${fresh_token}`
+    dispatch({ type: AuthActionKind.RefreshToken, payload: { ...state, token_expiration } })
   }, [setCookie])
+
+  /*
+  * Get a fresh token when token is about 1 minute to expire
+  */
+
+  setInterval(() => {
+    refreshToken()
+  }, 1000 * 60 * (new Date(state.token_expiration).getMinutes() - (new Date().getMinutes() - 1)))
 
   return (
     <AuthContext.Provider

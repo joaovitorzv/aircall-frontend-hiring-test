@@ -1,13 +1,14 @@
-import { AxiosError, AxiosInstance, AxiosRequestConfig, AxiosResponse } from "axios";
+import { AxiosError, AxiosInstance, AxiosResponse } from "axios";
 
 const onResponse = (response: AxiosResponse): AxiosResponse => {
-  console.log("fodase")
-  console.log(`[response] [${JSON.stringify(response)}]`);
+  if (response.config.url?.includes('/auth/login')) {
+
+    return response
+  }
   return response;
 }
 
 const onResponseError = (error: AxiosError): Promise<AxiosError> => {
-  console.error(`[response error] [${JSON.stringify(error)}]`);
   return Promise.reject(error);
 }
 
